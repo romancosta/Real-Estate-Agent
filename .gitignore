@@ -1,0 +1,7 @@
+# Personal search data never lives in this repo
+criteria.md
+config/criteria.md
+*.local.md
+reports/
+state/
+.env
