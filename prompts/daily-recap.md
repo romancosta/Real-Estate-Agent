@@ -1,16 +1,13 @@
-# Evening check + daily recap (scheduled routine prompt)
+# Check + daily recap
 
-> Placeholders: `{{DRIVE_FOLDER_ID}}`, `{{CRITERIA_DOC_ID}}`. Connectors required: Zillow, Google Drive.
+Prepend [`_shared.md`](_shared.md).
 
-Run every step of `prompts/check.md` first. Then:
-
-1. **Today's activity** — `search_files` in `{{DRIVE_FOLDER_ID}}` for `title contains 'seen'` created since
-   00:00 Eastern today and read them (reuse anything already read in step 2 of the check).
-2. **Recap doc** — `create_file` in the folder, title `Daily recap YYYY-MM-DD`, `contentMimeType: text/markdown`:
-   - **Act on these** — top 3 not-excluded listings seen in the last 4 days, each with score, key facts,
-     link, why it fits, and the next step (book a tour, apply, ask about move-in date or laundry).
-   - **New today** — table of every listing logged today.
-   - **Market pulse** — fresh listings checked today vs. matches; any notable pattern (one or two lines).
-   - **Timeline** — days until the move-in window opens, with a one-line nudge if it is getting close.
-3. **Report** — the final message (push + email): count of new listings today, the top 3 in one line each
-   with links, and a link to the recap doc.
+1. Run every step of [`check.md`](check.md) except the report.
+2. Write a new snapshot `watchlist YYYY-MM-DD HHMM` with the full applied state (including this run's new listings).
+3. `create_file` `Daily recap YYYY-MM-DD` (`text/markdown`), numbering listings once across the doc:
+   - **★ Favorites** — each with next step (tour, apply, confirm move-in date / 12-month lease / laundry)
+   - **New since last recap** — listings whose `first seen` is after the previous `Daily recap` doc's creation (or last 24 h)
+   - **Watchlist** — every ACTIVE listing, best first (re-recommended until dismissed or gone)
+   - **Market pulse** — fresh listings checked vs. matches since the last recap (1–2 lines)
+   - **Timeline** — days until the move-in window opens; nudge if close
+4. Report: new since last recap, favorites, then the top 5 of the watchlist, using the recap doc's numbers, plus the doc link.

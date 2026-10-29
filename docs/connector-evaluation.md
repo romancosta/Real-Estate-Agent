@@ -28,4 +28,4 @@ for manual confirmation.
 ## State storage
 
 Google Drive connector: can create and read Google Docs but cannot edit file content and cannot read
-plain-text files back. Hence one small append-only `seen …` Google Doc per run with new listings.
+plain-text files back. Hence append-only `seen` / `actions` Google Docs, compacted daily into a `watchlist` snapshot.
