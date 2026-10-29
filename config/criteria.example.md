@@ -1,35 +1,38 @@
 # Home Search Criteria (EXAMPLE — placeholders only)
 
-Copy this into a **private** Google Doc named `Criteria` inside your private Drive folder.
-Every routine reads that doc at run time, so edits take effect on the next run without touching the routines.
+Put this in a **private** Google Doc titled exactly `Criteria` inside your private Drive folder.
+Routines always read the newest doc with that title, so a new version can be issued as a new doc.
 
-## Hard filters (Zillow search)
-- Type: rentals only (homeStatuses: forRent)
-- Bedrooms: min <N> (<preferred layout>; fallbacks: <e.g. 2bd + den>)
-- Bathrooms: min <N>
-- Living area: min <N> sqft
-- Rent: max $<N>/mo
-- Lease: <N>+ months
-- Move-in window: <start date> – <end date>
-
-## Search area (customPolygonWKT — paste exactly)
+## Base filters (use in every search call)
+- homeStatuses: ["forRent"]
+- bedrooms: min <N>
+- bathrooms: min <N>
+- rentalMonthlyPayment: max <N>
+- rentalAvailabilityDate: <last acceptable move-in date>
+- Do NOT set livingAreaSqft in the search — size is applied in the filter rules below.
+- Search area (customPolygonWKT, paste exactly):
 MULTIPOLYGON(((<lon lat>, ...)), ((<lon lat>, ...)))
 
-Covers: <neighborhood list>. Drop results clearly outside these areas.
+## Areas
+- <Area 1>: <neighborhoods, hard boundaries such as "nothing north of <road> (lat X)">
+- <Area 2>: <...>
+- Special zones (e.g. BEACH) as lat/long rectangles, used by the filter rules and scoring.
 
-## Laundry rule
-- Re-run the search with the same filters: (a) rentalShowOnly ["inUnitLaundry"], (b) keywords "shared laundry".
-- Tag listings in (a) as "W/D in unit".
-- EXCLUDE listings in (b) but NOT in (a).
-- Everything else: keep, tag "laundry unconfirmed".
+## Search plan (each call = base filters + the extra shown)
+- A: nothing extra
+- B: rentalShowOnly ["inUnitLaundry"]
+- C: keywords "shared laundry"
+- E: conditional keyword search, e.g. keywords "den", only when a rule needs the evidence
 
-## Scoring (0–100)
-- Bedrooms: preferred = 40; fallback A = 30; fallback B = 25; other = 10
-- Price: <= $<A> = 20; <= $<B> = 15; <= max = 8 (include required monthly fees)
-- Size: >= <A> sqft = 15; >= <B> = 10; >= min = 5
-- Laundry: in unit = 15; unconfirmed = 5
-- Baths: >= 2 = 10; 1.5 = 5
-- "Strong match" = score >= 70 -> push-worthy
+## Filter rules
+- Size: min <N> sqft, with any zone-specific exceptions
+- Laundry: in C but not in B → EXCLUDE; in B → "W/D in unit"; else "laundry unconfirmed"
+- Lease: <N>+ months
+- Move-in window: <start> – <end>
+
+## Scoring (0–100, cap at 100)
+- Bedrooms / layout, price incl. required fees, size, laundry, baths, zone bonus
+- "Strong match" = score >= 70
 
 ## Notes / preferences
 - <free text the agent should weigh>

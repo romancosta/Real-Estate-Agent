@@ -71,7 +71,7 @@ alerts stay on as the real-time layer between runs.
   Google Docs but not edit them, so state is event-sourced: append-only `seen` / `actions` docs, periodically
   compacted into a `watchlist` snapshot.
 - **Private by construction**: the public repo only has placeholders (`{{DRIVE_FOLDER_ID}}`,
-  `{{CRITERIA_DOC_ID}}`, `{{ACTIONS_DOC_ID}}`); the real values exist only inside the private routines.
+  `{{ACTIONS_DOC_ID}}`); the real values exist only inside the private routines.
 
 See [`docs/connector-evaluation.md`](docs/connector-evaluation.md) for the data-source evaluation.
 

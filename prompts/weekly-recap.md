@@ -3,8 +3,8 @@
 Prepend [`_shared.md`](_shared.md).
 
 1. Load state; also read `Daily recap` docs created since the previous `Weekly recap` doc (or last 7 days).
-2. Search with `daysOnZillow: {max: 7}` (A/B/C), plus D: base + `rentalShowOnly: ["priceReduction"]`, no day limit.
-3. **Liveness**: run the base search with no day limit once per POLYGON in the criteria's MULTIPOLYGON.
+2. Search with window `daysOnZillow: {max: 7}`, plus one extra call D: base filters + `rentalShowOnly: ["priceReduction"]`, no day limit.
+3. **Liveness**: run the base filters with no day limit once per POLYGON in the criteria's search area.
    If a call returned every match (`displayResultsCount == totalMatchingCount`), move FAVORITES/ACTIVE
    listings in that area that appear in neither its results (by zpid, or by building/address for `group`
    results) to GONE with note `not listed as of <date>`. If truncated, skip that area.

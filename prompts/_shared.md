@@ -6,7 +6,8 @@ Never run shell or git commands, and never create, edit, commit or push files in
 is checked out — this repo is public and search data is private. All output goes to Google Drive or your final message.
 
 ## State — private Drive folder `{{DRIVE_FOLDER_ID}}` (all Google Docs)
-- `Criteria` (`{{CRITERIA_DOC_ID}}`): filters, polygon, laundry rule, move-in window, scoring. Never edit.
+- `Criteria`: base filters, search area, search plan, filter rules, scoring. Use the NEWEST doc titled exactly
+  `Criteria` in the folder (a new version may be issued as a new doc). Never edit.
 - `Dismiss & favorites (edit me)` (`{{ACTIONS_DOC_ID}}`): user-edited. Lines after `---`:
   `x <code|address> [reason]` dismiss · `fav <code>` · `unfav <code>` · `undo <code>` (restore dismissed). Never edit.
 - `watchlist YYYY-MM-DD HHMM`: state snapshot; the newest is the base. Sections FAVORITES, ACTIVE,
@@ -18,16 +19,15 @@ is checked out — this repo is public and search data is private. All output go
 1. `search_files`: `parentId = '{{DRIVE_FOLDER_ID}}' and title contains 'watchlist'` (`excludeContentSnippets: true`);
    read the newest by `createdTime`.
 2. `search_files`: `parentId = '{{DRIVE_FOLDER_ID}}' and createdTime > '<that snapshot's createdTime>'`; read every `seen` and `actions` doc.
-3. Read `Criteria` and `Dismiss & favorites (edit me)`.
+3. `search_files`: `parentId = '{{DRIVE_FOLDER_ID}}' and title = 'Criteria'`; read the newest. Read `Dismiss & favorites (edit me)`.
 4. Apply in order: snapshot → seen → actions (oldest first) → edit-me lines. Codes match the last 5 digits
    of a zpid (use 6 if ambiguous); addresses/names match loosely. "Known" = every ID in any section.
 
 ## Search
-`zillow_property_search` with the criteria's filters and polygon as `customPolygonWKT`; never set
-`displayLimit` or `sortSelection`. For each window run three calls: A base · B base + `rentalShowOnly: ["inUnitLaundry"]`
-· C base + `keywords: "shared laundry"`. zpid = number before `_zpid` in `homeDetailsPageUrl`. EXCLUDE results
-outside the named areas, in C but not in B, or clearly short-term. Tag B as "W/D in unit", else "laundry unconfirmed".
-Treat `group` results as one listing using the summary ranges. Score with the criteria rubric (rent + required fees).
+Run every call in the criteria's **Search plan** with `zillow_property_search`: the criteria's base filters and
+search area (`customPolygonWKT`), plus that call's extra, plus `daysOnZillow` for this run's window. Never set
+`displayLimit` or `sortSelection`. zpid = number before `_zpid` in `homeDetailsPageUrl`. Apply the criteria's
+**Filter rules** (EXCLUDE what they reject) and **Scoring**. Treat `group` results as one listing using the summary ranges.
 
 ## Report format
 Number every listing you show: `[n] 80313 · 95 · 3bd/2.5ba · 1,969 sqft · $3,900 · Hollywood · W/D in unit · <link>`
